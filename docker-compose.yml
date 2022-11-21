@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  api:
+    container_name: fb-api
+    restart: always
+    build: .
+    ports:
+      - 6060:6060
+    environment:
+      - DB_HOST=host.docker.internal
+    depends_on:
+      - db
+    volumes:
+    - .:/usr/src/app
+
+  db:
+    container_name: fb-db
+    image: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      - POSTGRES_DB=fantastic-brew-db
+      - POSTGRES_USER=eddie
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=db
+volumes: 
+ data: {}
