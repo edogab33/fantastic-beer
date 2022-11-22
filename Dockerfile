@@ -1,11 +1,15 @@
 # Installs Node.js image
 FROM node:19.1-alpine
 
-WORKDIR /usr/src/app
+ENV NODE_ENV development
 
-COPY ["package.json", "package-lock.json", "tsconfig.json", "./"]
+RUN npm install --global nodemon
 
-COPY ./src ./src
+WORKDIR /usr/app
+
+COPY ["package.json", "package-lock.json", "tsconfig.json", "./app"]
+
+COPY . .
 
 RUN npm install
 

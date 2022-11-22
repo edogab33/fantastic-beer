@@ -6,13 +6,15 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
-router.get('/productions', (req: Request, res: Response) => {
-    productionService.getProductions().then(
-        (productions) => {
-            res.setHeader("Content-Type", "application/json")
-            res.status(200).send({
+router.post('/productions', (req: Request, res: Response) => {
+    /**
+     * Insert a beer production.
+     */
+    productionService.insertProduction(req.body).then(
+        () => {
+            res.status(201).send({
                 "success": true,
-                "data": productions
+                "data": []
             });
         }
     ).catch(err => {
@@ -23,23 +25,35 @@ router.get('/productions', (req: Request, res: Response) => {
     });
 })
 
-router.post('/productions', (req: Request, res: Response) => {
-    productionService.insertProduction(req.body).then(
-        (newProduction) => {
-            res.status(201).send({
+router.delete('/productions/name/:name/date/:day', (req: Request, res: Response) => {
+    /**
+     * Delete a production from the database.
+     * 
+     * @param name - Name of the beer
+     * @param day - Day of the production
+     */
+    productionService.deleteProduction(req.params.name, req.params.day).then(
+        () => {
+            res.status(200).send({
                 "success": true,
-                "data": newProduction
-            });
-        }
-    ).catch(err => {
-        res.status(500).send({
-            "success": false,
-            "data": err.detail
-        });
-    });
+                "data": []
+            })
+        }).catch((err) => {
+            res.status(500).send({
+                "success": false,
+                data: err.detail
+            })
+        })
 })
 
 router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req: Request, res: Response) => {
+    /**
+     * Get overall quantity of beer produced.
+     * 
+     * @param name - Name of the beer
+     * @param start_day - Start day
+     * @param end_day - End day
+     */
     if (!req.params.start_day && !req.params.end_day) {
         res.status(400).send({
             "success": false,
@@ -48,7 +62,10 @@ router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req:
     } else {
         productionService.getProductionsQuantity(req.params.start_day, req.params.end_day, req.params.name).then(
             (quantity) => {
-                res.status(200).send(quantity);
+                res.status(200).send({
+                    "success": true,
+                    "data": quantity
+                });
             }).catch((err) => {
                 res.status(500).send({
                     "success": false,
@@ -58,16 +75,25 @@ router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req:
     }
 });
 
-router.get('/productions/laudable/name/:name?/date/:start_day?/:end_day?', (req: Request, res: Response) => {
+router.get('/productions/laudable/count/name/:name?/date/:start_day?/:end_day?', (req: Request, res: Response) => {
+    /**
+     * Get laudable days.
+     * 
+     * @param name - Name of the beer
+     * @param start_day - Start day
+     * @param end_day - End day
+     */
     if (!req.params.start_day && !req.params.end_day) {
         res.status(400).send({
             "success": false,
-            "data": "You should provide a starting and ending days as parameters."
+            "data": "You should provide a starting and ending day as parameters."
         })
     } else {
-        productionService.getLaudableDays(req.params.start_day, req.params.end_day, req.params.name).then(
-            (days) => {
-                res.status(200).send(days);
+        productionService.getNumberLaudableDays(req.params.start_day, req.params.end_day, req.params.name).then(
+            (numLaudableDays) => {
+                res.status(200).send({
+                    "success": true,
+                    "data": numLaudableDays});
             }).catch((err) => {
                 res.status(500).send({
                     "success": false,
@@ -76,5 +102,4 @@ router.get('/productions/laudable/name/:name?/date/:start_day?/:end_day?', (req:
         });
     }
 });
-
 export default router

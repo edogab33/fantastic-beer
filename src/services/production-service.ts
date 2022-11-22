@@ -16,13 +16,18 @@ export const getProductionsQuantity = async (start_day: string, end_date?: strin
 
 export const insertProduction = async (newProduction: { name: string; day: string; quantity: number }) => {
     return await db.query(
-        'INSERT INTO production (name, day, quantity) VALUES ($1, $2, $3) RETURNING *', 
+        'INSERT INTO production (name, day, quantity) VALUES ($1, $2, $3)', 
         [newProduction.name, newProduction.day, newProduction.quantity]
     )
 }
 
-// TODO: sum should be STRICLY greater than previous days
-export const getLaudableDays = async (start_day: string, end_day: string, name?: string) => {
+export const deleteProduction = async (name: string, day: string) => {
+    return await db.query(
+        'DELETE FROM production WHERE name = $1 AND day = $2', [name, day]
+    )
+}
+
+export const getNumberLaudableDays = async (start_day: string, end_day: string, name?: string) => {
     return await db.query(
         `WITH overall_prod as (
             SELECT day, lead(sum(quantity),1,0) over(order by day) l, sum(quantity) s
@@ -31,7 +36,7 @@ export const getLaudableDays = async (start_day: string, end_day: string, name?:
             GROUP BY day 
             ORDER BY day
           )
-          SELECT day, s as sum FROM (
+          SELECT count(*) FROM (
             SELECT day, s, l, max(s) over(
                 order by day rows unbounded preceding exclude current row
             ) m 
