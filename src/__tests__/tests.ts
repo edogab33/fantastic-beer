@@ -4,7 +4,7 @@ const baseURL = "localhost:6060"
 
 describe("POST /productions", () => {
     /**
-     * Satisfy Requirement 1: Insert (+delete) a given quantity of beer type produced in a day
+     * Satisfies Requirement 1: Insert (+delete) a given quantity of beer type produced in a day
      */
     const newProduction = {
         "name": "weiss",
@@ -26,7 +26,7 @@ describe("POST /productions", () => {
 
 describe("GET /productions/quantity", () => {
     /**
-     * Satisfy Requirement 2: Get the quantity of beer produced either in one day or in a range of 
+     * Satisfies Requirement 2: Get the quantity of beer produced either in one day or in a range of 
      *                        days, by type or overall.
      */
     it("should return 5", async () => {
@@ -61,7 +61,7 @@ describe("GET /productions/quantity", () => {
 
 describe("GET /laudable/count", () => {
     /**
-     * Satisfy Requirement 3: Get the number of laudable days in a range of dates, optionally
+     * Satisfies Requirement 3: Get the number of laudable days in a range of dates, optionally
      *                        by beer type.
      * 
      * A laudable day is defined as:
