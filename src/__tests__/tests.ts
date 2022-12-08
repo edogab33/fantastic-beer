@@ -12,7 +12,7 @@ describe("POST /productions", () => {
         "quantity": 4
     }
     afterAll(async () => {
-        await request(baseURL).delete(`/productions/name/${newProduction.name}/date/${newProduction.day}`)
+        await request(baseURL).delete(`/productions?name=${newProduction.name}&day=${newProduction.day}`)
     })
     it("should add a beer into production", async () => {
         const response = await request(baseURL).post("/productions").send(newProduction)
@@ -30,31 +30,31 @@ describe("GET /productions/quantity", () => {
      *                        days, by type or overall.
      */
     it("should return 5", async () => {
-        const response = await request(baseURL).get("/productions/quantity/name/date/2022-01-01")
+        const response = await request(baseURL).get("/productions/quantity?start_day=2022-01-01")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"produced_beer": "5"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 3", async () => {
-        const response = await request(baseURL).get("/productions/quantity/name/pils/date/2022-01-01")
+        const response = await request(baseURL).get("/productions/quantity?name=pils&start_day=2022-01-01")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"produced_beer": "3"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 35", async () => {
-        const response = await request(baseURL).get("/productions/quantity/name/date/2022-01-01/2022-01-05")
+        const response = await request(baseURL).get("/productions/quantity?start_day=2022-01-01&end_day=2022-01-05")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"produced_beer": "35"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 12", async () => {
-        const response = await request(baseURL).get("/productions/quantity/name/weiss/date/2022-01-01/2022-01-05")
+        const response = await request(baseURL).get("/productions/quantity?name=weiss&start_day=2022-01-01&end_day=2022-01-05")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"produced_beer": "12"}]}
         expect(response.body).toEqual(expectedResult)
     })
-    it("should return status 404", async () => {
-        const response = await request(baseURL).get("/productions/quantity/name/date/")
+    it("should return status 400", async () => {
+        const response = await request(baseURL).get("/productions/quantity")
         expect(response.statusCode).toBe(400)
     })
 })
@@ -70,31 +70,31 @@ describe("GET /laudable/count", () => {
      *  - The amount of produced beer is strictly greater to the amount of the following day.
      */
     it("should return 1", async () => {
-        const response = await request(baseURL).get("/productions/laudable/count/name/date/2022-01-01/2022-01-03")
+        const response = await request(baseURL).get("/productions/laudable?start_day=2022-01-01&end_day=2022-01-03")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"count": "1"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 2", async () => {
-        const response = await request(baseURL).get("/productions/laudable/count/name/date/2022-01-01/2022-01-05")
+        const response = await request(baseURL).get("/productions/laudable?start_day=2022-01-01&end_day=2022-01-05")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"count": "2"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 1", async () => {
-        const response = await request(baseURL).get("/productions/laudable/count/name/weiss/date/2022-01-01/2022-01-03")
+        const response = await request(baseURL).get("/productions/laudable?name=weiss&start_day=2022-01-01&end_day=2022-01-03")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"count": "1"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return 2", async () => {
-        const response = await request(baseURL).get("/productions/laudable/count/name/weiss/date/2022-01-01/2022-01-05")
+        const response = await request(baseURL).get("/productions/laudable?name=weiss&start_day=2022-01-01&end_day=2022-01-05")
         expect(response.statusCode).toBe(200)
         let expectedResult = {"success": true, "data": [{"count": "2"}]}
         expect(response.body).toEqual(expectedResult)
     })
     it("should return status 400", async () => {
-        const response = await request(baseURL).get("/productions/laudable/count/name/date/")
+        const response = await request(baseURL).get("/productions/laudable")
         expect(response.statusCode).toBe(400)
     })
 })

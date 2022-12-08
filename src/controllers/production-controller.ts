@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express, {query, Request, Response} from 'express';
 import bodyParser from 'body-parser';
 import * as productionService from '../services/production-service'
 
@@ -25,14 +25,17 @@ router.post('/productions', (req: Request, res: Response) => {
     });
 })
 
-router.delete('/productions/name/:name/date/:day', (req: Request, res: Response) => {
+router.delete('/productions', (req: Request, res: Response) => {
     /**
      * Delete a production from the database.
      * 
      * @param name - Name of the beer
      * @param day - Day of the production
      */
-    productionService.deleteProduction(req.params.name, req.params.day).then(
+    const name = req.query.name as string
+    const day = req.query.day as string
+
+    productionService.deleteProduction(name, day).then(
         () => {
             res.status(200).send({
                 "success": true,
@@ -46,7 +49,7 @@ router.delete('/productions/name/:name/date/:day', (req: Request, res: Response)
         })
 })
 
-router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req: Request, res: Response) => {
+router.get('/productions/quantity', (req: Request, res: Response) => {
     /**
      * Get overall quantity of beer produced.
      * 
@@ -54,13 +57,17 @@ router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req:
      * @param start_day - Start day
      * @param end_day - End day
      */
-    if (!req.params.start_day && !req.params.end_day) {
+    const name: string = req.query.name as string
+    const start_day: string = req.query.start_day as string
+    const end_day: string = req.query.end_day as string
+
+    if (!start_day) {
         res.status(400).send({
             "success": false,
-            "data": "You should provide at least one day as parameter."
+            "data": "You should provide the start day as parameter."
         })
     } else {
-        productionService.getProductionsQuantity(req.params.start_day, req.params.end_day, req.params.name).then(
+        productionService.getProductionsQuantity(start_day, end_day, name).then(
             (quantity) => {
                 res.status(200).send({
                     "success": true,
@@ -75,7 +82,7 @@ router.get('/productions/quantity/name/:name?/date/:start_day?/:end_day?', (req:
     }
 });
 
-router.get('/productions/laudable/count/name/:name?/date/:start_day?/:end_day?', (req: Request, res: Response) => {
+router.get('/productions/laudable', (req: Request, res: Response) => {
     /**
      * Get laudable days.
      * 
@@ -83,13 +90,17 @@ router.get('/productions/laudable/count/name/:name?/date/:start_day?/:end_day?',
      * @param start_day - Start day
      * @param end_day - End day
      */
-    if (!req.params.start_day && !req.params.end_day) {
+    const name: string = req.query.name as string
+    const start_day: string = req.query.start_day as string
+    const end_day: string = req.query.end_day as string
+
+    if (!start_day) {
         res.status(400).send({
             "success": false,
-            "data": "You should provide a starting and ending day as parameters."
+            "data": "You should provide the start day as parameter."
         })
     } else {
-        productionService.getNumberLaudableDays(req.params.start_day, req.params.end_day, req.params.name).then(
+        productionService.getNumberLaudableDays(start_day, end_day, name).then(
             (numLaudableDays) => {
                 res.status(200).send({
                     "success": true,
