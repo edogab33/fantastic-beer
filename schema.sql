@@ -1,7 +1,8 @@
 CREATE TABLE production (
   quantity int NOT NULL,
   name varchar(50) NOT NULL,
-  day date NOT NULL DEFAULT CURRENT_DATE, 
+  day date NOT NULL DEFAULT CURRENT_DATE,
+  id serial UNIQUE,
   PRIMARY KEY (name, day)
 );
 

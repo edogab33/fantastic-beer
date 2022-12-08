@@ -7,8 +7,6 @@ RUN npm install --global nodemon
 
 WORKDIR /usr/app
 
-COPY ["package.json", "package-lock.json", "tsconfig.json", "./app"]
-
 COPY . .
 
 RUN npm install
