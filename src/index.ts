@@ -9,7 +9,8 @@ app.use('',
 )
 
 app.use((req: Request, res: Response) => {
-    res.status(404).send({
+    res.statusMessage = "I'm a mead producer"
+    res.status(419).send({
         "success": false,
         "data": "Nothing to show here!"
     });
