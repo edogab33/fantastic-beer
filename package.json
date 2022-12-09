@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "dev": "nodemon -e ts --exec \"npm run build && npm start\"",
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "test": "jest --coverage --testPathPattern=src/"
   },
   "author": "Edoardo Gabrielli",
