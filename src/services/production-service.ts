@@ -11,7 +11,7 @@ export const getProductionsQuantity = async (start_day: string, end_date?: strin
         WHERE ($1 IS NULL OR name = $1) AND (
             ($3 IS NOT NULL AND day BETWEEN $2 AND $3) OR (day = $2)
         )`, [name, start_day, end_date]
-    ).catch(err=>{console.log(err)})
+    )
 }
 
 export const insertProduction = async (newProduction: { name: string; day: string; quantity: number }) => {
@@ -43,5 +43,5 @@ export const getNumberLaudableDays = async (start_day: string, end_day: string, 
             FROM overall_prod
           ) as mt
           WHERE s > m AND s > l AND s != 0;`, [name, start_day, end_day]
-    );
+    )
 }
