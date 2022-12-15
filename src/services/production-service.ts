@@ -1,9 +1,5 @@
 import {db} from '../connection'
 
-export const getProductions = async () => {
-    return await db.query('SELECT * FROM production')
-}
-
 export const getProductionsQuantity = async (start_day: string, end_date?: string, name?: string) => {
     return await db.query(
         `SELECT SUM(quantity) AS produced_beer 
